@@ -51,12 +51,16 @@ window.CR_ADS = (function () {
   async function init() {
     if (!isNative) { console.log('[CR_ADS] Not running as a native app — ads disabled.'); return; }
     try {
-      const mod = await import('@capacitor-community/admob');
-      AdMobPlugin = mod.AdMob;
-      await AdMobPlugin.initialize({
-        // testingDevices: ['YOUR_TEST_DEVICE_ID'], // add your phone's AdMob device ID here while testing
-        initializeForTesting: true, // ⚠️ set this to false only for your real release build
-      });
+      // On a plain (non-bundled) Capacitor project, native plugins are
+      // exposed on window.Capacitor.Plugins — NOT via import(), which only
+      // works in projects built with a bundler (webpack/vite). This was the
+      // actual bug: import() was silently failing every time.
+      if (!window.Capacitor || !window.Capacitor.Plugins || !window.Capacitor.Plugins.AdMob) {
+        console.warn('[CR_ADS] AdMob plugin not found on window.Capacitor.Plugins yet.');
+        return;
+      }
+      AdMobPlugin = window.Capacitor.Plugins.AdMob;
+      await AdMobPlugin.initialize({});
       ready = true;
       preloadInterstitial();
       preloadRewarded();
