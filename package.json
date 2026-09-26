@@ -1,0 +1,17 @@
+{
+  "name": "chroma-roll",
+  "version": "1.0.0",
+  "description": "CHROMA ROLL - Android wrapper (Capacitor) with AdMob",
+  "scripts": {
+    "sync": "npx cap sync android",
+    "open:android": "npx cap open android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^6.1.2",
+    "@capacitor/android": "^6.1.2",
+    "@capacitor-community/admob": "^6.2.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^6.1.2"
+  }
+}
