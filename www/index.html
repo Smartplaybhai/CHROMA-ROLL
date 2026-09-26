@@ -304,6 +304,7 @@ canvas{display:block;background:rgba(3,7,10,.34);border:1px solid #9bb6a955;bord
     <div class="result-title" id="msgTitle">LEVEL COMPLETE</div>
     <div id="msgStars" aria-label="Earned stars"></div>
     <div id="msgCoins"></div>
+    <button id="doubleCoinsBtn" type="button" style="display:none;margin:10px auto 4px;padding:10px 20px;border-radius:20px;border:1px solid #ffd35c;background:linear-gradient(180deg,#3a2f10,#1c1608);color:#ffd35c;font-weight:800;letter-spacing:1px;cursor:pointer;">🎬 WATCH AD FOR 2X COINS</button>
     <div class="result-actions">
       <button id="restartBtn" type="button">RESTART</button>
       <button id="nextBtn" class="primary" type="button">NEXT LEVEL</button>
@@ -355,7 +356,7 @@ function levelSpec(lv){return window.CHROMA_LEVELS&&window.CHROMA_LEVELS.find(x=
 function updateLobbyProgress(lv){const target=Math.min(60,Math.max(1,lv||savedProgressLevel()));document.getElementById('worldName').textContent='WORLD MAP';document.getElementById('worldMapName').textContent='The Journey';worldLvl.textContent=target;}
 
 let coins=+localStorage.getItem('cr_coins')||0, best=JSON.parse(localStorage.getItem('cr_best')||'{}'), startTime=performance.now(), paused=false, pausedAt=0, pausedDuration=0;
-const coinPill=document.getElementById('coinPill'), msgStars=document.getElementById('msgStars'), msgCoins=document.getElementById('msgCoins'), restartBtn=document.getElementById('restartBtn'), nextBtn=document.getElementById('nextBtn'), msgTitle=document.getElementById('msgTitle'), timerEl=document.getElementById('dimensionTimer');
+const coinPill=document.getElementById('coinPill'), msgStars=document.getElementById('msgStars'), msgCoins=document.getElementById('msgCoins'), doubleCoinsBtn=document.getElementById('doubleCoinsBtn'), restartBtn=document.getElementById('restartBtn'), nextBtn=document.getElementById('nextBtn'), msgTitle=document.getElementById('msgTitle'), timerEl=document.getElementById('dimensionTimer');
 function targetTime(){return levelTimeLimit(level)*0.5;}
 function levelTimeLimit(lv){
   if(lv>=1&&lv<=60&&window.CHROMA_60_TIMERS) return window.CHROMA_60_TIMERS[lv-1];
@@ -813,6 +814,7 @@ function levelFailed(){
   msgStars.innerHTML='<span class="result-star empty" style="opacity:.35">☆</span><span class="result-star empty" style="opacity:.35">☆</span><span class="result-star empty" style="opacity:.35">☆</span>';
   msgCoins.textContent='TIME UP · NO REWARD';
   nextBtn.textContent='RESTART';
+  doubleCoinsBtn.style.display='none';
   msg.classList.add('show');msg.setAttribute('aria-hidden','false');
   if(window.CR_ADS)window.CR_ADS.maybeShowInterstitial();
 }
@@ -864,6 +866,22 @@ function levelComplete(){
   for(let i=0;i<stars;i++){const s=document.createElement('span');s.className='result-star';s.textContent='★';s.style.animationDelay=(i*180)+'ms';msgStars.appendChild(s);requestAnimationFrame(()=>requestAnimationFrame(()=>s.classList.add('pop')));}
   for(let i=stars;i<3;i++){const s=document.createElement('span');s.className='result-star empty';s.textContent='☆';msgStars.appendChild(s);}
   msgCoins.textContent='+'+earned+' coins';if(level>=60){msgTitle.textContent='COMING SOON — NEW LEVELS';nextBtn.textContent='WORLD MAP';}else{nextBtn.textContent='NEXT LEVEL';}
+  if(earned>0&&window.CR_ADS){
+    doubleCoinsBtn.style.display='inline-block';doubleCoinsBtn.disabled=false;doubleCoinsBtn.textContent='🎬 WATCH AD FOR 2X COINS';
+    doubleCoinsBtn.onclick=function(){
+      doubleCoinsBtn.disabled=true;doubleCoinsBtn.textContent='LOADING AD…';
+      window.CR_ADS.showRewarded(function(){
+        coins+=earned;localStorage.setItem('cr_coins',coins);updateCoinUI();
+        msgCoins.textContent='+'+(earned*2)+' coins (2x!)';
+        doubleCoinsBtn.style.display='none';
+        animateCoinReward(earned);
+      },function(){
+        doubleCoinsBtn.disabled=false;doubleCoinsBtn.textContent='🎬 WATCH AD FOR 2X COINS';
+      });
+    };
+  }else{
+    doubleCoinsBtn.style.display='none';
+  }
   msg.classList.add('show');msg.setAttribute('aria-hidden','false');animateCoinReward(earned);
   if(window.CR_ADS)window.CR_ADS.maybeShowInterstitial();
 }
