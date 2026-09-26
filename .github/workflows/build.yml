@@ -32,6 +32,31 @@ jobs:
       - name: Sync web game into the Android project
         run: npx cap sync android
 
+      - name: Set app display name to CHROMA ROLL
+        run: |
+          sed -i 's#<string name="app_name">.*</string>#<string name="app_name">CHROMA ROLL</string>#' android/app/src/main/res/values/strings.xml
+          sed -i 's#<string name="title_activity_main">.*</string>#<string name="title_activity_main">CHROMA ROLL</string>#' android/app/src/main/res/values/strings.xml
+
+      - name: Add AdMob App ID to manifest (fixes the crash)
+        run: |
+          sed -i '/<application/a \    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>' android/app/src/main/AndroidManifest.xml
+
+      - name: Set custom app icon
+        run: |
+          sudo apt-get update -y && sudo apt-get install -y imagemagick
+          ICON_SRC="icon.png"
+          if [ ! -f "$ICON_SRC" ]; then ICON_SRC="www/skins/eclipse.png"; fi
+          declare -A SIZES=( [mdpi]=48 [hdpi]=72 [xhdpi]=96 [xxhdpi]=144 [xxxhdpi]=192 )
+          for density in "${!SIZES[@]}"; do
+            size=${SIZES[$density]}
+            dir="android/app/src/main/res/mipmap-$density"
+            mkdir -p "$dir"
+            convert "$ICON_SRC" -resize ${size}x${size}^ -gravity center -extent ${size}x${size} "$dir/ic_launcher.png"
+            cp "$dir/ic_launcher.png" "$dir/ic_launcher_round.png"
+          done
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml
+          rm -f android/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml
+
       - name: Accept Android SDK licenses
         run: yes | $ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager --licenses || true
 
