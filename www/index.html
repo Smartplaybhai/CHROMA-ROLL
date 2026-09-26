@@ -348,7 +348,7 @@ canvas{display:block;background:rgba(3,7,10,.34);border:1px solid #9bb6a955;bord
 <script>
 // TEMPORARY QA/TESTING MODE: set to false later to restore the original progression locks.
 // When enabled, all existing and newly added levels are selectable without completing prior levels.
-const TESTING_MODE=true;
+const TESTING_MODE=false;
 let N=5, level=1, CELL, cells, gates, discovered={}, player, color='blue', trail=[], won=false, completionRewarded=false, timerId=null, timeLimit=180, timeLeft=180, hintSteps=[];
 const cv=document.getElementById('c'), ctx=cv.getContext('2d');
 const btn=document.getElementById('colorBtn'), lvlEl=document.getElementById('lvl'), msg=document.getElementById('msg');
