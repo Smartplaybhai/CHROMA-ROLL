@@ -39,7 +39,7 @@ jobs:
 
       - name: Add AdMob App ID to manifest (fixes the crash)
         run: |
-          sed -i '/<application/a \    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>' android/app/src/main/AndroidManifest.xml
+          sed -i '/<\/application>/i\    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-3940256099942544~3347511713"/>' android/app/src/main/AndroidManifest.xml
 
       - name: Set custom app icon
         run: |
