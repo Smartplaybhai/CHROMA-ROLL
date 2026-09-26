@@ -3,8 +3,11 @@
 <title>CHROMA ROLL</title>
 <style>
 :root{--bg:#05060a;--blue:#3af0ff;--red:#ff3a6e;--gold:#e8c27a;--txt:#cfe8ff;}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;touch-action:manipulation;}
-html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Segoe UI',sans-serif;overflow:hidden;}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent!important;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none;touch-action:manipulation;outline:none!important;}
+html,body{height:100%;background:var(--bg);color:var(--txt);font-family:'Segoe UI',sans-serif;overflow:hidden;overscroll-behavior:none;-webkit-overflow-scrolling:touch;}
+button,a,input,select,textarea{-webkit-tap-highlight-color:transparent!important;outline:none!important;-webkit-appearance:none;appearance:none;}
+button:focus,a:focus,*:focus{outline:none!important;box-shadow:none!important;}
+canvas{-webkit-tap-highlight-color:transparent!important;}
 
 /* ---------- LOBBY ---------- */
 #lobby{position:fixed;inset:0;overflow:hidden;background:#0b0810 url('lobby_background.png') center center / cover no-repeat;}
