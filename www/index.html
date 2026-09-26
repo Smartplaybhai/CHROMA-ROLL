@@ -664,7 +664,7 @@ function updateHintNudge(){
   if(btn.classList.contains('hint-nudge')!==!!need) btn.classList.toggle('hint-nudge',!!need);
   if(need) btn.style.setProperty('--nudge',COL[need]);
 }
-document.getElementById('hintBtn').onclick=()=>{showHint();playSfx('hint');haptic(18);};
+document.getElementById('hintBtn').onclick=async()=>{if(window.CR_ADS)await window.CR_ADS.showInterstitialNow();showHint();playSfx('hint');haptic(18);};
 
 const pauseBtn=document.getElementById('pauseBtn'), pauseOverlay=document.getElementById('pauseOverlay'),
   settingsOverlay=document.getElementById('settingsOverlay'), resumeBtn=document.getElementById('resumeBtn'),
