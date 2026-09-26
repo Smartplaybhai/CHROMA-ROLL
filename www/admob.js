@@ -130,7 +130,19 @@ window.CR_ADS = (function () {
     }
   }
 
-  return { init, showBanner, hideBanner, maybeShowInterstitial, showRewarded };
+  async function showInterstitialNow() {
+    // Unlike maybeShowInterstitial, this ALWAYS shows an ad immediately
+    // (used for the hint button — one ad per hint request).
+    if (!ready) return;
+    if (!interstitialLoaded) { await preloadInterstitial(); if (!interstitialLoaded) return; }
+    try {
+      await AdMobPlugin.showInterstitial();
+      interstitialLoaded = false;
+      preloadInterstitial();
+    } catch (e) { console.warn('[CR_ADS] showInterstitialNow failed:', e); }
+  }
+
+  return { init, showBanner, hideBanner, maybeShowInterstitial, showInterstitialNow, showRewarded };
 })();
 
 document.addEventListener('DOMContentLoaded', () => { window.CR_ADS.init(); });
