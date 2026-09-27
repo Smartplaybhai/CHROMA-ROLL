@@ -41,6 +41,10 @@ jobs:
           sed -i 's#<string name="app_name">.*</string>#<string name="app_name">CHROMA ROLL</string>#' android/app/src/main/res/values/strings.xml
           sed -i 's#<string name="title_activity_main">.*</string>#<string name="title_activity_main">CHROMA ROLL</string>#' android/app/src/main/res/values/strings.xml
 
+      - name: Remove the stuck launch/splash screen
+        run: |
+          sed -i 's/@style\/AppTheme.NoActionBarLaunch/@style\/AppTheme.NoActionBar/' android/app/src/main/AndroidManifest.xml
+
       - name: Add AdMob App ID to manifest (fixes the crash)
         run: |
           sed -i '/<\/application>/i\    <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" android:value="ca-app-pub-2519831355714403~3861928738"/>' android/app/src/main/AndroidManifest.xml
